@@ -20,14 +20,6 @@ function getRepoContributors(repoOwner, repoName, cb) {
   });
 }
 
-getRepoContributors(owner, repo, function (err, result) {
-  console.log("Errors:", err);
-
-  result.forEach(user => {
-    downloadImageByURL(user.avatar_url, 'avatars/' + user.id + '.png');
-  });
-});
-
 function downloadImageByURL(url, filePath) {
   request.get(url)
     .on('error', function (err) {
@@ -37,4 +29,16 @@ function downloadImageByURL(url, filePath) {
       console.log('Response Status Code: ', response.statusCode);
     })
     .pipe(fs.createWriteStream(filePath));
+}
+
+if (owner === undefined || repo === undefined) {
+  throw err;
+} else {
+  getRepoContributors(owner, repo, function (err, result) {
+    console.log("Errors:", err);
+
+    result.forEach(user => {
+      downloadImageByURL(user.avatar_url, 'avatars/' + user.id + '.png');
+    });
+  });
 }
